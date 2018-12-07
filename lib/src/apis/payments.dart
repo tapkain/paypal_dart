@@ -26,7 +26,7 @@ class Payment {
   this.redirectUrls,
   this.transactions,
   payer}) {
-    this.createTime = createTime ?? new DateTime.now();
+    this.createTime = createTime ?? DateTime.now();
     this.links = links ?? [];
     this.transactions = transactions ?? [];
     this.redirectUrls = redirectUrls ?? {};
@@ -34,7 +34,7 @@ class Payment {
   }
 
   Payment.fromJson(String json) {
-    _initializeFromMap(JSON.decode(json));
+    _initializeFromMap(jsonDecode(json));
   }
 
   Payment.fromMap(Map data) {
@@ -50,7 +50,7 @@ class Payment {
     failureReason = data["failure_reason"];
     createTime = data["create_time"] != null
         ? DateTime.parse(data["create_time"])
-        : new DateTime.now();
+        : DateTime.now();
     if (updateTime != null) {
       updateTime = DateTime.parse(data["update_time"]);
     }
@@ -136,12 +136,12 @@ class PaymentsApi {
   /// Creates a [Payment].
   Future<Payment> createPayment(payment) async {
     var response = await _client.post("$_endPoint/payment",
-        body: JSON.encode(payment is Payment ? payment.toJson() : payment),
+        body: jsonEncode(payment is Payment ? payment.toJson() : payment),
         headers: {
           "Accept": "application/json",
           "Content-Type": "application/json"
         });
-    return new Payment.fromJson(response.body);
+    return Payment.fromJson(response.body);
   }
 }
 

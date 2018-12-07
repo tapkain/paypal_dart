@@ -15,7 +15,7 @@ class PayPalAccessCredentials {
 
   /// Initializes based on a JSON string.
   PayPalAccessCredentials.fromJson(String json) {
-    _initializeFromMap(JSON.decode(json));
+    _initializeFromMap(jsonDecode(json));
   }
 
   /// Initializes with data in a Map.

@@ -17,7 +17,7 @@ class PayPalException implements Exception {
       int this.statusCode: 500});
 
   PayPalException.fromJson(String json, {int statusCode: 500}) {
-    _initializeFromMap(JSON.decode(json), statusCode: statusCode);
+    _initializeFromMap(jsonDecode(json), statusCode: statusCode);
   }
 
   PayPalException.fromMap(Map data, {int statusCode: 500}) {

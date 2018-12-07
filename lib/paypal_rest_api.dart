@@ -14,6 +14,6 @@ class PayPalRestApi {
   PaymentsApi payments;
 
   PayPalRestApi(this._client) {
-    payments = new PaymentsApi(_client);
+    payments =PaymentsApi(_client);
   }
 }

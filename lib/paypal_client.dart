@@ -17,7 +17,7 @@ class PayPalClient extends BaseClient {
   PayPalAccessCredentials credentials;
   BaseClient _inner;
   DateTime _lastTokenTime;
-  final RegExp _leadingSlashes = new RegExp(r"^/+");
+  final RegExp _leadingSlashes =RegExp(r"^/+");
   bool debug;
 
   PayPalClient(this._inner, this.clientId, this.clientSecret,
@@ -29,7 +29,7 @@ class PayPalClient extends BaseClient {
 
   Future _fetchToken() async {
     credentials = await obtainAccessCredentials();
-    _lastTokenTime = new DateTime.now();
+    _lastTokenTime =DateTime.now();
   }
 
   String _makeUrl(String url) =>
@@ -54,7 +54,11 @@ class PayPalClient extends BaseClient {
 
   /// Asynchronously obtains an access token from the PayPal API.
   Future<PayPalAccessCredentials> obtainAccessCredentials() async {
-    var authString = BASE64.encode("$clientId:$clientSecret".codeUnits);
+  // var bytes = UTF8.encode(str);
+
+  const Base64Codec base64 = Base64Codec();
+  var authString = base64.encode("$clientId:$clientSecret".codeUnits);
+    // var authString = BASE64.encode("$clientId:$clientSecret".codeUnits);
     var response = await _inner.post("$paypalEndpoint/$apiVersion/oauth2/token",
         body: "grant_type=client_credentials",
         headers: {
@@ -63,13 +67,13 @@ class PayPalClient extends BaseClient {
           "Authorization": "Basic $authString",
           "Content-Type": "application/x-www-form-urlencoded"
         });
-    return new PayPalAccessCredentials.fromJson(response.body);
+    return PayPalAccessCredentials.fromJson(response.body);
   }
 
   @override
   Future<StreamedResponse> send(BaseRequest request) async {
     if (_lastTokenTime != null && credentials != null) {
-      var now = new DateTime.now();
+      var now =DateTime.now();
       var difference = now.difference(_lastTokenTime);
       if (difference.inSeconds >= credentials.expiresIn) await _fetchToken();
     } else
@@ -103,7 +107,7 @@ class PayPalClient extends BaseClient {
         print("Error response text: ${out.body}");
       }
 
-      throw new PayPalException.fromJson(out.body,
+      throw PayPalException.fromJson(out.body,
           statusCode: response.statusCode);
     } else
       return response;
